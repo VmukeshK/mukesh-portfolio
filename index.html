@@ -1,86 +1,408 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mukesh's Portfolio</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V Mukesh Kumar — Unreal Engine software engineer</title>
+<meta name="description" content="Software engineer building gameplay systems and native plugins in Unreal Engine. Frontend lead at Juego Studios, Bengaluru.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ---------- tokens ---------- */
+  :root {
+    --bg: #1B1E24;
+    --bg-2: #22262E;
+    --ink: #E8E5DE;
+    --ink-2: #A9AEB6;
+    --ink-3: #6E747D;
+    --line: #2E333C;
+    --line-2: #3A404A;
+    --accent: #D9A441;
+    --accent-ink: #1B1E24;
+    --grid-minor: rgba(255,255,255,0.035);
+    --grid-major: rgba(255,255,255,0.07);
+    --hatch: rgba(255,255,255,0.05);
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #F5F3EE; --bg-2: #ECE9E2; --ink: #1E2126; --ink-2: #4E545C; --ink-3: #8A9098;
+      --line: #DDD9D0; --line-2: #C9C4BA; --accent: #B47D1E; --accent-ink: #FFFFFF;
+      --grid-minor: rgba(0,0,0,0.045); --grid-major: rgba(0,0,0,0.09); --hatch: rgba(0,0,0,0.06);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #F5F3EE; --bg-2: #ECE9E2; --ink: #1E2126; --ink-2: #4E545C; --ink-3: #8A9098;
+    --line: #DDD9D0; --line-2: #C9C4BA; --accent: #B47D1E; --accent-ink: #FFFFFF;
+    --grid-minor: rgba(0,0,0,0.045); --grid-major: rgba(0,0,0,0.09); --hatch: rgba(0,0,0,0.06);
+  }
+
+  /* ---------- base ---------- */
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Instrument Sans", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    font-size: 17px; line-height: 1.55; -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+  img { max-width: 100%; display: block; }
+  h1, h2, h3, h4 { margin: 0; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+  h2 { font-size: 1.55rem; }
+  h3 { font-size: 1.2rem; }
+  p { margin: 0; }
+  ul { margin: 0; padding: 0; list-style: none; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- nav ---------- */
+  .nav {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 86%, transparent);
+    backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
+  }
+  .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 56px; }
+  .nav .brand { color: var(--ink); font-weight: 600; }
+  .nav ul { display: flex; gap: 22px; }
+  .nav ul a { color: var(--ink-2); font-size: 0.95rem; }
+  .nav ul a:hover { color: var(--ink); text-decoration: none; }
+
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative; padding: 96px 0 72px; overflow: hidden;
+    background-image:
+      linear-gradient(var(--grid-major) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
+      linear-gradient(var(--grid-minor) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px);
+    background-size: 128px 128px, 128px 128px, 16px 16px, 16px 16px;
+    background-position: -1px -1px;
+    animation: grid-in 1.1s ease-out both;
+  }
+  .hero::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(180deg, transparent 30%, var(--bg) 100%);
+  }
+  .hero .wrap { position: relative; z-index: 1; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3.4rem); max-width: 18ch; animation: rise 0.8s 0.15s ease-out both; }
+  .hero .name { color: var(--ink-2); font-weight: 500; margin-bottom: 14px; animation: rise 0.8s 0.05s ease-out both; }
+  .hero .lede { margin-top: 22px; max-width: 58ch; color: var(--ink-2); font-size: 1.08rem; animation: rise 0.8s 0.3s ease-out both; }
+  .hero .now {
+    margin-top: 28px; display: inline-flex; align-items: center; gap: 10px;
+    color: var(--ink-2); font-size: 0.95rem; animation: rise 0.8s 0.4s ease-out both;
+  }
+  .hero .now .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent); }
+  .hero .links { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 10px; animation: rise 0.8s 0.5s ease-out both; }
+  .btn {
+    display: inline-flex; align-items: center; padding: 9px 16px; border-radius: 6px;
+    border: 1px solid var(--line-2); color: var(--ink); font-size: 0.95rem; background: var(--bg-2);
+  }
+  .btn:hover { text-decoration: none; border-color: var(--ink-3); }
+  .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+  .btn.primary:hover { filter: brightness(1.06); }
+
+  @keyframes grid-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .hero, .hero * { animation: none !important; } }
+
+  /* ---------- sections ---------- */
+  section { padding: 64px 0; border-top: 1px solid var(--line); }
+  .sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; margin-bottom: 34px; }
+  .sec-head p { color: var(--ink-2); max-width: 46ch; }
+
+  /* featured project rows */
+  .project { display: grid; grid-template-columns: 5fr 7fr; gap: 36px; padding: 34px 0; border-top: 1px solid var(--line); }
+  .project:first-of-type { border-top: 0; padding-top: 0; }
+  .project .media {
+    aspect-ratio: 16 / 10; border-radius: 8px; border: 1px solid var(--line-2); overflow: hidden;
+    background: var(--bg-2); display: grid; place-items: center; color: var(--ink-3); font-size: 0.9rem; text-align: center; padding: 16px;
+    background-image: repeating-linear-gradient(135deg, transparent 0 10px, var(--hatch) 10px 11px);
+  }
+  .project .media img, .project .media video { width: 100%; height: 100%; object-fit: cover; }
+  .project .meta { color: var(--ink-2); font-size: 0.95rem; margin: 6px 0 14px; }
+  .project .meta strong { color: var(--ink); font-weight: 500; }
+  .project ul li { position: relative; padding-left: 18px; margin-bottom: 8px; color: var(--ink-2); }
+  .project ul li::before { content: ""; position: absolute; left: 0; top: 0.68em; width: 8px; height: 1px; background: var(--ink-3); }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+  .tags span { font-size: 0.82rem; color: var(--ink-2); border: 1px solid var(--line-2); border-radius: 4px; padding: 2px 8px; }
+
+  /* plugins table */
+  .table { width: 100%; border-collapse: collapse; }
+  .table th { text-align: left; font-weight: 500; color: var(--ink-3); font-size: 0.9rem; padding: 0 12px 10px 0; border-bottom: 1px solid var(--line-2); }
+  .table td { padding: 14px 12px 14px 0; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-2); }
+  .table td:first-child { color: var(--ink); font-weight: 500; white-space: nowrap; }
+  .table tr:hover td { background: var(--bg-2); }
+
+  /* simple lists */
+  .list li { padding: 18px 0; border-top: 1px solid var(--line); display: grid; grid-template-columns: 240px 1fr; gap: 24px; }
+  .list li:first-child { border-top: 0; padding-top: 0; }
+  .list h3 { font-size: 1.02rem; font-weight: 600; }
+  .list .sub { color: var(--ink-3); font-size: 0.9rem; margin-top: 3px; }
+  .list p { color: var(--ink-2); }
+
+  h3.group { font-size: 0.95rem; font-weight: 500; color: var(--ink-3); margin: 34px 0 14px; }
+  h3.group:first-of-type { margin-top: 0; }
+
+  /* notes */
+  .notes li { padding: 22px 0; border-top: 1px solid var(--line); }
+  .notes li:first-child { border-top: 0; padding-top: 0; }
+  .notes h3 { font-size: 1.1rem; margin-bottom: 8px; }
+  .notes p { color: var(--ink-2); max-width: 70ch; }
+
+  /* contact */
+  .contact p { max-width: 54ch; color: var(--ink-2); }
+  .contact .links { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 10px; }
+  footer { padding: 28px 0 40px; color: var(--ink-3); font-size: 0.9rem; border-top: 1px solid var(--line); }
+
+  @media (max-width: 760px) {
+    body { font-size: 16px; }
+    .nav ul { gap: 14px; }
+    .hero { padding: 64px 0 48px; }
+    .project { grid-template-columns: 1fr; gap: 20px; }
+    .list li { grid-template-columns: 1fr; gap: 8px; }
+    .sec-head { flex-direction: column; gap: 8px; }
+    .table-wrap { overflow-x: auto; }
+    .table { min-width: 620px; }
+  }
+</style>
 </head>
-
 <body>
-<div class="viewport-background"></div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
 
-<div class="container">
-    <br>
-    <h1 class="text-white display-1 d-flex justify-content-center">
-        Mukesh's Portfolio
-    </h1>
-    <br>
-    <hr>
-</div>
+<nav class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top">V Mukesh Kumar</a>
+    <ul>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#plugins">Plugins</a></li>
+      <li><a href="#personal">Personal</a></li>
+      <li><a href="#notes">Notes</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
 
-<!-- Projects -->
-<div class="container">
-    <div>
-        <h1 class="text-white text-center display-4">Projects</h1>
+<header class="hero" id="top">
+  <div class="wrap">
+    <p class="name">V Mukesh Kumar</p>
+    <h1>I build gameplay systems and native plugins in Unreal Engine.</h1>
+    <p class="lede">Software Engineer II at Juego Studios in Bengaluru. Four years shipping games and simulations to Android, iOS and Linux, with C++ where it matters and Blueprints where it doesn't. I also ship in Unity when the project calls for it.</p>
+    <p class="now"><span class="dot"></span> Now: frontend lead on a 4v4 multiplayer shooter in closed alpha, Unreal 5.8</p>
+    <div class="links">
+      <a class="btn primary" href="Mukesh-Kumar-Resume.pdf">Resume (PDF)</a>
+      <a class="btn" href="https://www.linkedin.com/in/v-mukesh-kumar-829aa2173" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn" href="https://github.com/vmukeshk" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn" href="mailto:v.mukesh00kumar@gmail.com">Email</a>
+    </div>
+  </div>
+</header>
+
+<section id="work">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Selected work</h2>
+      <p>Three projects where I owned the frontend end to end: architecture, estimation, delivery.</p>
     </div>
 
-    <!-- Craftlife -->
-    <div class="card col-lg-10 col-md-10 col-sm-10 rounded-4 mx-auto">
-        <h4 class="card-title">Craftlife</h4>
-        <p class="card-text">Craftlife is a crafting adventure simulation game with an isometric cartoon art style, offering both online and offline gameplay on iOS. Players collect and manage resources like wood, stone, cotton, and metal ore to build and upgrade production structures that convert raw materials into items such as Tumblers and T-Shirts. The game features drag-and-drop product delivery, experience-based progression up to level 100, and intricate quest systems. 
-        <br><br>
-        I served as the lead frontend engineer responsible for implementing and integrating key features including the entire UI/UX system, resource management loop, crafting logic, and analytics tracking. Multiplayer systems included chat, friends, and Crafting Circles. Technical implementations covered PlayFab SDK, Google Sign-In, WebSocket and HTTP APIs, and platform-specific in-app purchase flows. I also handled release setup for both console and App Store deployments using Unreal Engine.
-        </p>
-        <div class="ratio ratio-16x9">
-            <iframe src="https://drive.google.com/file/d/1MAhLnlBgoaOZ8uU9wfhGyT7V8mEkttmC/preview" allowfullscreen></iframe>
-        </div>
+    <article class="project">
+      <div class="media">Add a clip or screenshot here (16:10)</div>
+      <div>
+        <h3>BAM (By Any Means)</h3>
+        <p class="meta"><strong>Frontend lead</strong> — 4v4 tactical shooter with MOBA-style abilities — Unreal 5.8 — closed alpha</p>
+        <ul>
+          <li>Four hero classes built on the Gameplay Ability System inside a modular Game Feature plugin: abilities, costs, cooldowns and cues, all server-authoritative with replication and latency handling.</li>
+          <li>Component-driven experience flow: round transitions and client selection RPCs in a 4v4 mode component, startup routing through a custom asset manager that loads bundles and action sets per experience, and UI replication over the gameplay message subsystem.</li>
+          <li>Matchmaking and session flow in the client, integrating the backend's REST and socket services. Dedicated server builds run on AWS GameLift.</li>
+          <li>Replication and performance fixes from playtests, level optimization for the arena map, and PCG tooling for modular walls and ramparts.</li>
+          <li>Lead a frontend team of up to six inside a twenty-person cross-discipline team, and run client walkthroughs.</li>
+        </ul>
+        <div class="tags"><span>C++</span><span>GAS</span><span>Game Feature plugins</span><span>Replication</span><span>PCG</span><span>GASP</span><span>AWS GameLift</span></div>
+      </div>
+    </article>
+
+    <article class="project">
+      <div class="media">Add a clip or screenshot here (16:10)</div>
+      <div>
+        <h3>Craftlife</h3>
+        <p class="meta"><strong>Frontend lead</strong> — crafting simulation on iOS and Android — the studio's first Unreal 5 mobile release</p>
+        <ul>
+          <li>Wrote the reusable plugins the project needed and the engine didn't have: Google Sign-In over JNI and UPL, a native Android share sheet, and a PlayFab integration layer.</li>
+          <li>Tracked engine-level Android crashes to scoped-storage changes in API 33, patched the UPL and generated Java, and verified the fix with ADB and Unreal Insights.</li>
+          <li>In-app purchases, analytics, cloud save with cross-device progression, and the full UI system, crafting, mining and harvesting loops, a modular quest system, guilds, marketplace, leaderboards, and chat and friends over WebSocket and HTTP.</li>
+          <li>Release setup for Google Play and the App Store.</li>
+        </ul>
+        <div class="tags"><span>Unreal 5</span><span>JNI / UPL</span><span>PlayFab</span><span>IAP</span><span>WebSocket</span><span>Android / iOS</span></div>
+      </div>
+    </article>
+
+    <article class="project">
+      <div class="media">Add a clip or screenshot here (16:10)</div>
+      <div>
+        <h3>Musical DNA</h3>
+        <p class="meta"><strong>Frontend lead</strong> — real-time music visualization on Android and iOS — Unreal 5.7</p>
+        <ul>
+          <li>MIDI input plugins for Android (JNI, UPL, Java) and iOS (Objective-C), with platform-specific routing and per-channel state components that bring live note events into the engine.</li>
+          <li>Real-time music-theory classifiers in C++ (note, scale, chord, inversion and shape detection) that match what's played against scale and chord databases.</li>
+          <li>A visualizer factory subsystem that spawns and lays out visualizer actors and drives Niagara from live input; a file metadata system to record, save and replay sessions.</li>
+          <li>REST API handlers, social sign-in (Google, Apple, Facebook) and WebSocket connections for the mobile backend. Reached several milestones before the client paused the project.</li>
+        </ul>
+        <div class="tags"><span>C++</span><span>MIDI</span><span>JNI</span><span>Objective-C</span><span>Niagara</span><span>WebSocket</span><span>Android / iOS</span></div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section id="plugins">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Plugins and native work</h2>
+      <p>Where Unreal stops and the platform starts. Most of these were built once and reused across projects.</p>
+    </div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>What</th><th>Platform</th><th>How</th></tr></thead>
+        <tbody>
+          <tr><td>MIDI input</td><td>Android, iOS</td><td>JNI, UPL and Java on Android; Objective-C on iOS. Native device callbacks marshalled into the engine.</td></tr>
+          <tr><td>Google Sign-In</td><td>Android</td><td>JNI and UPL with a small Java layer, exposed to Blueprints.</td></tr>
+          <tr><td>Native share sheet</td><td>Android</td><td>Platform share intent wrapped as an engine plugin.</td></tr>
+          <tr><td>PlayFab integration</td><td>Android, iOS</td><td>Auth, cloud save and progression, with async handling that doesn't block gameplay.</td></tr>
+          <tr><td>QR and barcode scanner</td><td>Windows, Linux</td><td>ZXing wrapped in a plugin for runtime scanning inside a simulation tool.</td></tr>
+          <tr><td>Social sign-in</td><td>Android, iOS</td><td>Google, Apple and Facebook auth wired to a mobile backend, with WebSocket sessions for real-time features.</td></tr>
+          <tr><td>Encrypted client comms</td><td>Desktop</td><td>AES over CryptoPP and OpenSSL for HTTP and WebSocket traffic in a clan system.</td></tr>
+          <tr><td>Discord bridge</td><td>Desktop</td><td>Bot that pushes events from Unreal to a Discord server.</td></tr>
+          <tr><td>Scoped storage fix</td><td>Android 13+</td><td>UPL and generated-Java patch for engine crashes after the API 33 storage changes.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="more">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>More work</h2>
+      <p>Smaller roles and earlier projects, grouped by engine.</p>
     </div>
 
-    <!-- Claryo Tool -->
-    <div class="card col-lg-10 col-md-10 col-sm-10 rounded-4 mx-auto">
-        <h4 class="card-title">Warehouse Simulator</h4>
-        <p class="card-text">This simulator tool was developed in Unreal Engine for runtime scanning and transformation of in-game actors, with support for different NPC placed in the world. It features integration with the ZXing third-party library for barcode scanning on Windows and Linux. Core functionalities include dynamic actor manipulation, runtime transform editing, NPC spawning, and interactive element placement using QR and barcode recognition.</p>
-        <div class="ratio ratio-16x9">
-            <iframe src="https://drive.google.com/file/d/1-cOWHHWR_LHY0qUKRMKs9tqGTWAbYZ_I/preview" allowfullscreen></iframe>
-        </div>
-    </div>
+    <h3 class="group">Unreal Engine</h3>
+    <ul class="list">
+      <li>
+        <div><h3>Claryo</h3><p class="sub">Warehouse simulation and training tool, Linux</p></div>
+        <p>Led a team of four. Runtime actor scanning and transform editing, NPC spawning, level creation, save and load, multi-camera viewing, forklift and worker AI, and QR and barcode placement through the ZXing plugin. Primary technical contact for the client; delivered on schedule.</p>
+      </li>
+      <li>
+        <div><h3>JVerse VR</h3><p class="sub">Multiplayer VR on Oculus, Pico and Windows</p></div>
+        <p>Multiplayer over the Photon Realtime SDK, voice chat, a VR UI system, GAS-based interactions, and build support for Oculus and Pico headsets.</p>
+      </li>
+      <li>
+        <div><h3>Gummy Bears: Night of the Living Leftovers</h3><p class="sub">Multiplayer VR shooter</p></div>
+        <p>Multiplayer functionality across the player, monster AI, projectiles, UI and VFX.</p>
+      </li>
+      <li>
+        <div><h3>Clan system</h3><p class="sub">Backend-connected social features</p></div>
+        <p>HTTP and WebSocket communication through the engine's modules, clan UI, and AES encryption of traffic using CryptoPP and OpenSSL.</p>
+      </li>
+      <li>
+        <div><h3>Biobrx</h3><p class="sub">Building and avatar creation platform</p></div>
+        <p>Interaction system, runtime gizmo, drag-and-drop UI, modular characters through a runtime skeletal mesh generator, and a Discord bot fed from the engine.</p>
+      </li>
+      <li>
+        <div><h3>VR training simulator</h3><p class="sub">Ramp service evaluation</p></div>
+        <p>Player setup, Chaos vehicle integration, task-flow module and UI for a platform that tests how ramp employees make decisions on the job.</p>
+      </li>
+      <li>
+        <div><h3>Pixel Streaming</h3><p class="sub">Large-world walkthrough, AWS</p></div>
+        <p>Pixel Streaming for a large open map with MetaHumans, launched from an AWS Linux server for browser-based viewing.</p>
+      </li>
+      <li>
+        <div><h3>AI and survival prototypes</h3><p class="sub">Swarm AI, Zombie and Battle Survival, Gunfire Brigade</p></div>
+        <p>Flanking and team behaviors, EQS queries, multiplayer zombie locomotion, bandit and zombie behavior trees, and VFX, environment, lighting and optimization passes.</p>
+      </li>
+    </ul>
 
-    <!-- VR Shooter Game -->
-    <div class="card col-lg-10 col-md-10 col-sm-10 rounded-4 mx-auto">
-        <h4 class="card-title">VR Shooter Game</h4>
-        <p class="card-text">An immersive VR game where players use snack guns to shoot and capture Snack Monsters. Each monster reacts uniquely based on the snack type. I implemented multiplayer functionality including player and AI UI replication and synchronization.</p>
-        <div class="ratio ratio-16x9">
-            <iframe src="https://drive.google.com/file/d/1c_nbAkcKHnqV7vlasvuhDWBQIhedGAhI/preview" allowfullscreen></iframe>
-        </div>
-    </div>
+    <h3 class="group">Unity</h3>
+    <ul class="list">
+      <li>
+        <div><h3>My Little Pony: Story Creator</h3><p class="sub">PlayDate Digital — <a href="https://play.google.com/store/apps/details?id=com.playdatedigital.lightscamerasaction" target="_blank" rel="noopener">on Google Play</a></p></div>
+        <p>Designed the content system: pagination with animation, layouts and assets loaded dynamically through Addressables and driven by ScriptableObjects, so junior developers could add pages by filling in entries instead of writing code.</p>
+      </li>
+      <li>
+        <div><h3>Kingpin Ludo</h3><p class="sub">Online and offline, two to four players or CPU</p></div>
+        <p>REST and WebSocket integration, force-update flow, AdMob, and performance optimization.</p>
+      </li>
+      <li>
+        <div><h3>Fashion Experience</h3><p class="sub">3D fashion mobile game</p></div>
+        <p>Mission system, reward system, UI and UI animation.</p>
+      </li>
+      <li>
+        <div><h3>Verse and KidVerse</h3><p class="sub">Educational and kids' metaverse titles</p></div>
+        <p>AI characters using Unity AI agents, vehicle AI, level editing, grid-based placement, character and voice-over integration, and unit gameplay.</p>
+      </li>
+      <li>
+        <div><h3>Strange Clan and Monster Defense</h3><p class="sub">NFT adventure game; tower defense</p></div>
+        <p>Attack and tower VFX and particle systems, and REST API work.</p>
+      </li>
+    </ul>
+  </div>
+</section>
 
-    <!-- VR Training Simulator -->
-    <div class="card col-lg-10 col-md-10 col-sm-10 rounded-4 mx-auto">
-        <h4 class="card-title">VR Training Simulator</h4>
-        <p class="card-text">A VR-based evaluation platform for ramp service employees, simulating real-world tasks and testing user decision-making. My role focused on player setup, Chaos vehicle integration, UI implementation, and task flow systems.</p>
-        <div class="ratio ratio-16x9">
-            <iframe src="https://drive.google.com/file/d/1-cOWHHWR_LHY0qUKRMKs9tqGTWAbYZ_I/preview" allowfullscreen></iframe>
-        </div>
+<section id="personal">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Personal projects</h2>
+      <p>Where I try things I can't justify on client time.</p>
     </div>
+    <ul class="list">
+      <li>
+        <div><h3>The MLA's Mansion</h3><p class="sub">In progress — single-player action thriller, Unreal 5.8</p></div>
+        <p>A 30–40 minute vertical slice: stealth into a mansion, a house-wide lockdown gunfight, and a reveal. Built solo with a deliberately bounded GAS setup (attributes, effects and tags everywhere; abilities only for montage-driven actions), StateTree for enemy AI, a custom camera, and motion-matching locomotion. Design and architecture docs live alongside the code.</p>
+      </li>
+      <li>
+        <div><h3>AI Shooter</h3><p class="sub">Learning project, Unreal C++</p></div>
+        <p>Behavior trees with custom decorators and tasks, team-based AI, and decision-making written in C++ rather than Blueprints, to understand what the AI system does under the hood.</p>
+      </li>
+    </ul>
+  </div>
+</section>
 
-    <!-- AI Shooter -->
-    <div class="card col-lg-10 col-md-10 col-sm-10 rounded-4 mx-auto">
-        <h4 class="card-title">AI Shooter</h4>
-        <p class="card-text">A solo project to learn Unreal's AI system. Implemented behavior trees with custom decorators/tasks, team-based AI logic, decision-making systems, and shooting mechanics. This was a playground for mastering C++-driven AI in Unreal.</p>
-        <div class="ratio ratio-16x9">
-            <iframe src="https://drive.google.com/file/d/1rz0oNnyG4KVmElvrThxG6aVCD3XHB9TS/preview" allowfullscreen></iframe>
-        </div>
+<section id="notes">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Notes</h2>
+      <p>Short write-ups on problems I've actually had to solve.</p>
     </div>
-</div>
-<br>
-<hr>
+    <ul class="notes">
+      <li>
+        <h3>Why Unreal Android builds started crashing after API 33</h3>
+        <p>Android 13 tightened scoped storage, and Unreal's generated Java for file access wasn't ready for it. The crash showed up as an engine-level failure, not a gameplay bug. The fix lived in the UPL file and the Java the build generates, and the proof lived in ADB logs and Unreal Insights.</p>
+      </li>
+      <li>
+        <h3>Getting MIDI from a phone into Unreal</h3>
+        <p>MIDI devices talk on native threads through platform APIs the engine knows nothing about. On Android that means JNI and a Java receiver; on iOS it means Objective-C. The interesting part is getting callbacks from those threads into the engine safely and with low enough latency to feel like an instrument.</p>
+      </li>
+      <li>
+        <h3>Bounded GAS: where abilities stop and plain effects begin</h3>
+        <p>GAS is easy to over-apply. My current rule on a single-player project: attributes, gameplay effects, cues and tags everywhere; gameplay abilities only for discrete, montage-driven actions like reload, melee or a takedown. Movement, aiming, cover and camera stay out. The result is less boilerplate and far fewer surprises.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap">
+    <h2>Get in touch</h2>
+    <p style="margin-top:14px">The fastest way is email. I'm based in Bengaluru and happy to talk about Unreal, plugin work, or anything real-time and 3D.</p>
+    <div class="links">
+      <a class="btn primary" href="mailto:v.mukesh00kumar@gmail.com">v.mukesh00kumar@gmail.com</a>
+      <a class="btn" href="https://www.linkedin.com/in/v-mukesh-kumar-829aa2173" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn" href="https://github.com/vmukeshk" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">V Mukesh Kumar. Built by hand, hosted on GitHub Pages.</div>
+</footer>
+
 </body>
-
 </html>
