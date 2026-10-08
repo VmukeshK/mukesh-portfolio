@@ -120,6 +120,8 @@
     background-image: repeating-linear-gradient(135deg, transparent 0 10px, var(--hatch) 10px 11px);
   }
   .project .media img, .project .media video { width: 100%; height: 100%; object-fit: cover; }
+  .project .media.has-video { padding: 0; background: #000; }
+  .project .media.has-video video { object-fit: contain; background: #000; }
   .project .meta { color: var(--ink-2); font-size: 0.95rem; margin: 6px 0 14px; }
   .project .meta strong { color: var(--ink); font-weight: 500; }
   .project ul li { position: relative; padding-left: 18px; margin-bottom: 8px; color: var(--ink-2); }
@@ -204,9 +206,13 @@
     </div>
 
     <article class="project">
-      <div class="media">Add a clip or screenshot here (16:10)</div>
+      <div class="media has-video">
+        <video controls muted loop playsinline preload="metadata" aria-label="Grenadier class gameplay on the optimized arena map">
+          <source src="Portfolio%20Video/Grenadier_withOptimizedMap.mp4" type="video/mp4">
+        </video>
+      </div>
       <div>
-        <h3>BAM (By Any Means)</h3>
+        <h3>Unannounced 4v4 tactical shooter</h3>
         <p class="meta"><strong>Frontend lead</strong> — 4v4 tactical shooter with MOBA-style abilities — Unreal 5.8 — closed alpha</p>
         <ul>
           <li>Four hero classes built on the Gameplay Ability System inside a modular Game Feature plugin: abilities, costs, cooldowns and cues, all server-authoritative with replication and latency handling.</li>
@@ -220,7 +226,11 @@
     </article>
 
     <article class="project">
-      <div class="media">Add a clip or screenshot here (16:10)</div>
+      <div class="media has-video">
+        <video controls muted loop playsinline preload="metadata" aria-label="Craftlife gameplay demo">
+          <source src="Portfolio%20Video/CraftLife_demo.mp4" type="video/mp4">
+        </video>
+      </div>
       <div>
         <h3>Craftlife</h3>
         <p class="meta"><strong>Frontend lead</strong> — crafting simulation on iOS and Android — the studio's first Unreal 5 mobile release</p>
@@ -235,7 +245,11 @@
     </article>
 
     <article class="project">
-      <div class="media">Add a clip or screenshot here (16:10)</div>
+      <div class="media has-video">
+        <video controls muted loop playsinline preload="metadata" aria-label="Musical DNA gameplay recording">
+          <source src="Portfolio%20Video/MusicalDNA_GameplayRecording.mp4" type="video/mp4">
+        </video>
+      </div>
       <div>
         <h3>Musical DNA</h3>
         <p class="meta"><strong>Frontend lead</strong> — real-time music visualization on Android and iOS — Unreal 5.7</p>
@@ -384,5 +398,21 @@
   <div class="wrap">V Mukesh Kumar. Built by hand, hosted on GitHub Pages.</div>
 </footer>
 
+<script>
+  // Play each muted clip only while it's on screen; pause it when scrolled away.
+  (function () {
+    var vids = document.querySelectorAll('.project video');
+    if (!('IntersectionObserver' in window)) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        var v = e.target;
+        if (e.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+        else v.pause();
+      });
+    }, { threshold: 0.5 });
+    vids.forEach(function (v) { io.observe(v); });
+  })();
+</script>
 </body>
 </html>
